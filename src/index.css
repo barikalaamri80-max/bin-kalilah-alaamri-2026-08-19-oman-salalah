@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #FAF9F6;
+    color: #23153c;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+.font-num {
+  font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
+}
+
+/* Gold Metallic Gradients & Borders */
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #ECC870 0%, #C59B27 50%, #A27B13 100%);
+}
+
+.gold-frame {
+  border: 1.5px solid #D4AF37;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.purple-panel {
+  background: linear-gradient(145deg, #1e1233 0%, #281845 50%, #150a26 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.6);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(180deg, #FFF1C5 0%, #E5BE5E 50%, #B8891D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.badge-pill-gold {
+  background: linear-gradient(90deg, #A88120 0%, #D4AF37 50%, #A88120 100%);
+}
+
+/* Podium 3D Isometric Base */
+.podium-base {
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.35) 0%, rgba(35, 21, 60, 0.95) 100%);
+  transform: perspective(600px) rotateX(25deg);
+  box-shadow: 0 25px 40px rgba(0, 0, 0, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+}
+
+/* Circuit Network Lines */
+.circuit-line {
+  position: absolute;
+  background: linear-gradient(90deg, #D4AF37, #F3D98B, #D4AF37);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.8);
+  z-index: 1;
+}
+
+@media print {
+  body {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 10pt;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-break {
+    page-break-before: always;
+  }
+  .purple-panel {
+    background: #1e1233 !important;
+    color: #FFFFFF !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .shadow-purple-card, .shadow-gold-glow {
+    box-shadow: none !important;
+  }
+}

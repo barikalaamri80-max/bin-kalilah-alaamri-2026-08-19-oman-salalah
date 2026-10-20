@@ -1,0 +1,6 @@
+{
+  "name": "Bin Kalilah Legal Dossier & Antitrust Platform",
+  "description": "Executive legal dossier and antitrust regulatory platform for Bin Kalilah Al-Amri Trading & Investment LLC, featuring interactive evidence vault, legal nodes, Google Slides integration, voice conversations, and text-to-speech.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

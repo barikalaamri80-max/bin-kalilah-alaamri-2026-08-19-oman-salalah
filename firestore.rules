@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidUserNote(data) {
+      return data.keys().hasAll(['userId', 'docId', 'note', 'status'])
+        && data.keys().hasOnly(['userId', 'docId', 'note', 'status', 'createdAt', 'updatedAt'])
+        && data.userId == request.auth.uid
+        && data.docId is string && data.docId.size() <= 64
+        && data.note is string && data.note.size() <= 2000
+        && data.status in ['reviewed', 'in_question', 'verified', 'flagged'];
+    }
+
+    function isValidSlideExport(data) {
+      return data.keys().hasAll(['userId', 'presentationId', 'title', 'presentationUrl'])
+        && data.keys().hasOnly(['userId', 'presentationId', 'title', 'presentationUrl', 'slidesCount', 'createdAt'])
+        && data.userId == request.auth.uid
+        && data.presentationId is string && data.presentationId.size() <= 256
+        && data.title is string && data.title.size() <= 256
+        && data.presentationUrl is string && data.presentationUrl.size() <= 512;
+    }
+
+    // Collection: user_notes
+    match /user_notes/{noteId} {
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(noteId)
+        && isSignedIn()
+        && isValidUserNote(request.resource.data);
+      allow update: if isValidId(noteId)
+        && isSignedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && isValidUserNote(request.resource.data);
+      allow delete: if isValidId(noteId)
+        && isSignedIn()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // Collection: slide_exports
+    match /slide_exports/{exportId} {
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(exportId)
+        && isSignedIn()
+        && isValidSlideExport(request.resource.data);
+      allow update: if isValidId(exportId)
+        && isSignedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && isValidSlideExport(request.resource.data);
+      allow delete: if isValidId(exportId)
+        && isSignedIn()
+        && resource.data.userId == request.auth.uid;
+    }
+  }
+}

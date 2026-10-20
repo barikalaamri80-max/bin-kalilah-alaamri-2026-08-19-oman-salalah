@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "UserNote": {
+      "title": "UserNote",
+      "description": "User case note and legal evaluation on an exhibit or evidence item",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "docId": { "type": "string", "maxLength": 64 },
+        "note": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["reviewed", "in_question", "verified", "flagged"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "docId", "note", "status"]
+    },
+    "SlideExport": {
+      "title": "SlideExport",
+      "description": "Exported Google Slides presentation deck record",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "presentationId": { "type": "string", "maxLength": 256 },
+        "title": { "type": "string", "maxLength": 256 },
+        "presentationUrl": { "type": "string", "maxLength": 512 },
+        "slidesCount": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "presentationId", "title", "presentationUrl"]
+    }
+  },
+  "firestore": {
+    "/user_notes/{noteId}": {
+      "schema": "UserNote",
+      "description": "Collection of legal annotations and verification states on docket evidence"
+    },
+    "/slide_exports/{exportId}": {
+      "schema": "SlideExport",
+      "description": "Collection of Google Slides presentation exports created by the user"
+    }
+  }
+}
