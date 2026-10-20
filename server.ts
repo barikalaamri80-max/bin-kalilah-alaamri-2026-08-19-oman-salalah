@@ -1,9 +1,10 @@
-import express, { Request, Response } from 'express';
+import express, { type Request, type Response } from 'express';
+import fs from 'fs';
 import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer, WebSocket } from 'ws';
-import { GoogleGenAI, LiveServerMessage, Modality } from '@google/genai';
+import { GoogleGenAI, type LiveServerMessage, Modality } from '@google/genai';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -283,7 +284,10 @@ wss.on('connection', async (clientWs: WebSocket) => {
 
 // Vite middleware in dev or static files in production
 async function setupApp() {
-  const isProd = process.env.NODE_ENV === 'production';
+  const distPath = path.resolve(__dirname, 'dist');
+  const distIndex = path.resolve(distPath, 'index.html');
+  const isProd = process.env.NODE_ENV === 'production' && fs.existsSync(distIndex);
+
   if (!isProd) {
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
@@ -292,9 +296,9 @@ async function setupApp() {
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.resolve(__dirname, 'dist')));
+    app.use(express.static(distPath));
     app.get('*', (_req, res) => {
-      res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+      res.sendFile(distIndex);
     });
   }
 

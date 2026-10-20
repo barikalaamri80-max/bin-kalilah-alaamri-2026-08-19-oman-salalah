@@ -75,7 +75,7 @@ export const MainHeader: React.FC<MainHeaderProps> = ({
               alt="شعار شركة بن كليلة العامري للتجارة والاستثمار"
               className="w-full h-full object-contain"
               onError={(e) => {
-                (e.target as HTMLImageElement).src = '/assets/aistudio/Image_1_1985a852.png';
+                (e.target as HTMLImageElement).src = '/assets/aistudio/Screenshot_20260903_041907_1697c674.jpg';
               }}
             />
           </div>
