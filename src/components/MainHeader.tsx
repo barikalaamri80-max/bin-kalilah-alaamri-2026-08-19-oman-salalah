@@ -1,307 +1,228 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
+  Volume2,
+  Square,
   Printer,
   Copy,
-  Presentation,
-  Mic,
-  Volume2,
-  LogIn,
-  LogOut,
   CheckCircle2,
-  Scale,
+  ShieldCheck,
+  Clock,
+  Award,
+  Lock,
   FileText,
   Sparkles,
-  Camera,
-  Layers,
-  MessageSquare,
-  Lock,
-  Upload,
-  Gavel,
+  UserCheck,
+  Play,
 } from 'lucide-react';
-import { User } from 'firebase/auth';
+import SovereignEmblem from './SovereignEmblem';
 
-export type ViewTab =
-  | 'slides_royal'
-  | 'dialogue_sim'
-  | 'violations_laws'
-  | 'studio_upload'
-  | 'dossier'
-  | 'ministry'
-  | 'ai_advisor'
-  | 'gallery';
-
-interface MainHeaderProps {
-  user: User | null;
-  activeView: ViewTab;
-  onChangeView: (view: ViewTab) => void;
-  onLogin: () => void;
-  onLogout: () => void;
-  onOpenSlides: () => void;
-  onOpenLiveVoice: () => void;
-  onPlayFullTTS: () => void;
-  isTTSPlaying: boolean;
-  onLockApp?: () => void;
+export interface MainHeaderProps {
+  onPlayWelcomeAudio?: () => void;
+  isPlayingWelcome?: boolean;
+  onPlayAllSequentially?: () => void;
+  isPlayingSequential?: boolean;
+  onLock?: () => void;
+  onOpenSlidesModal?: () => void;
+  onOpenLiveVoiceModal?: () => void;
 }
 
 export const MainHeader: React.FC<MainHeaderProps> = ({
-  user,
-  activeView,
-  onChangeView,
-  onLogin,
-  onLogout,
-  onOpenSlides,
-  onOpenLiveVoice,
-  onPlayFullTTS,
-  isTTSPlaying,
-  onLockApp,
+  onPlayWelcomeAudio,
+  isPlayingWelcome = false,
+  onPlayAllSequentially,
+  isPlayingSequential = false,
+  onLock,
+  onOpenSlidesModal,
+  onOpenLiveVoiceModal,
 }) => {
-  const [copied, setCopied] = React.useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // ignore
+    }
   };
 
   return (
-    <header className="border-b-2 border-[#D4AF37] bg-white/95 sticky top-0 z-40 backdrop-blur-md shadow-sm no-print">
-      {/* Top Bar with Brand & Global Actions */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-4 border-b border-gray-100">
-        {/* Real User Corporate Logo & Entity Details */}
-        <div className="flex items-center space-x-3 space-x-reverse">
-          <div className="relative w-14 h-14 rounded-full border-2 border-[#D4AF37] p-0.5 bg-white shadow-md flex items-center justify-center overflow-hidden shrink-0">
-            <img
-              src="/assets/aistudio/Screenshot_20260813_151701_com_lemon_lvoverseas_EditActivity_116c716b.jpg"
-              alt="شعار شركة بن كليلة العامري للتجارة والاستثمار"
-              className="w-full h-full object-contain"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = '/assets/aistudio/Screenshot_20260903_041907_1697c674.jpg';
-              }}
-            />
+    <header
+      className="relative overflow-hidden border-b-2 border-[#DEC98A] bg-[#FFFFFF] pt-5 pb-7 shadow-2xs"
+      dir="rtl"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-5">
+        {/* Top Utility & Action Row */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#EAE4D3]">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-[#524E48]">
+            <span className="text-[#23153C]">شركة بن كليلة العامري للتجارة والاستثمار ش.م.م</span>
+            <span aria-hidden="true">·</span>
+            <span className="text-[#8A6D2F]">صلالة — ظفار</span>
+            <span aria-hidden="true">·</span>
+            <span className="px-2.5 py-0.5 rounded-full bg-[#FAF9F6] border border-[#DEC98A] text-[#23153C]">
+              Barik Alaamri
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-base sm:text-lg font-black text-[#23153c] tracking-tight">
-                شركة بن كليلة العامري للتجارة والاستثمار ش.م.م
-              </h1>
-              <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
-                صلالة — ظفار
-              </span>
-            </div>
-            <p className="text-[11px] sm:text-xs text-amber-900 font-bold">
-              إلى الفاضل / <span className="text-[#23153c] font-black">خالد المسروري</span> المحترم — مدير عام مركز حماية المنافسة ومنع الاحتكار
-            </p>
+
+          <div className="flex flex-wrap items-center gap-2 no-print">
+            {onLock && (
+              <button
+                onClick={onLock}
+                className="px-3.5 py-2 rounded-xl bg-[#FAF9F6] hover:bg-[#F5EFE0] text-[#2C2A28] border border-[#DEC98A] text-xs font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+                title="قفل الملف بالرقم السري SALALAH2026"
+              >
+                <Lock className="w-3.5 h-3.5 text-[#8A6D2F]" />
+                <span>قفل الملف</span>
+              </button>
+            )}
+
+            {onOpenSlidesModal && (
+              <button
+                onClick={onOpenSlidesModal}
+                className="px-4 py-2 rounded-xl bg-[#23153C] hover:bg-[#311E54] text-[#FFF3C4] border border-[#D4AF37] text-xs font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer shadow-2xs"
+              >
+                <FileText className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>العرض التقديمي الشامل (PDF)</span>
+              </button>
+            )}
+
+            {onOpenLiveVoiceModal && (
+              <button
+                onClick={onOpenLiveVoiceModal}
+                className="px-3.5 py-2 rounded-xl bg-[#FAF9F6] hover:bg-[#F5EFE0] text-[#23153C] border border-[#D4AF37] text-xs font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#8A6D2F]" />
+                <span>المساعد الذكي والمستشار (PDF)</span>
+              </button>
+            )}
+
+            {onPlayWelcomeAudio && (
+              <button
+                onClick={onPlayWelcomeAudio}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors border whitespace-nowrap shrink-0 cursor-pointer ${
+                  isPlayingWelcome
+                    ? 'bg-[#D4AF37] text-[#23153C] border-[#23153C]'
+                    : 'bg-[#FAF9F6] text-[#2C2A28] border-[#DEC98A] hover:bg-[#F5EFE0]'
+                }`}
+              >
+                {isPlayingWelcome ? (
+                  <>
+                    <Square className="w-3.5 h-3.5 fill-current text-[#23153C]" />
+                    <span>إيقاف الصوت</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2 className="w-3.5 h-3.5 text-[#8A6D2F]" />
+                    <span>استماع فوري للوثيقة</span>
+                  </>
+                )}
+              </button>
+            )}
+
+            {onPlayAllSequentially && (
+              <button
+                onClick={onPlayAllSequentially}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors border whitespace-nowrap shrink-0 cursor-pointer ${
+                  isPlayingSequential
+                    ? 'bg-[#D4AF37] text-[#23153C] border-[#23153C]'
+                    : 'bg-[#F5EFE0] text-[#23153C] border-[#C5A858] hover:bg-[#EDE2C8]'
+                }`}
+              >
+                {isPlayingSequential ? (
+                  <>
+                    <Square className="w-3.5 h-3.5 fill-current text-[#23153C]" />
+                    <span>إيقاف التسلسل</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5 fill-current text-[#8A6D2F]" />
+                    <span>تشغيل الشرائح وراء بعض</span>
+                  </>
+                )}
+              </button>
+            )}
+
+            <button
+              onClick={() => window.print()}
+              className="px-3.5 py-2 rounded-xl bg-[#FFFFFF] hover:bg-[#FAF9F6] text-[#2C2A28] border border-[#DEC98A] text-xs font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              <Printer className="w-3.5 h-3.5 text-[#8A6D2F]" />
+              <span>طباعة / PDF</span>
+            </button>
+
+            <button
+              onClick={handleCopyLink}
+              className="px-3.5 py-2 rounded-xl bg-[#FFFFFF] hover:bg-[#FAF9F6] text-[#2C2A28] border border-[#DEC98A] text-xs font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              {copied ? (
+                <>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#8A6D2F]" />
+                  <span>تم النسخ</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5 text-[#8A6D2F]" />
+                  <span>نسخ</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
 
-        {/* Global Toolbar Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Quick Lock Button */}
-          {onLockApp && (
-            <button
-              onClick={onLockApp}
-              className="inline-flex items-center px-2.5 py-1.5 rounded-lg border border-gray-300 hover:border-red-400 bg-gray-50 hover:bg-red-50 text-gray-700 hover:text-red-700 font-bold text-xs transition shadow-xs cursor-pointer"
-              title="قفل الشاشة وتشفير الملف برمز المرور السري"
-            >
-              <Lock className="w-3.5 h-3.5 ml-1 text-gray-500" />
-              <span>قفل الملف</span>
-            </button>
-          )}
+        {/* Center Hero Identity: Official Uploaded Company Seal + Title + Exclusive Recipient */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-right gap-5">
+            <SovereignEmblem size={88} className="ring-2 ring-[#F5EFE0]" />
 
-          {/* Google Slides Integration */}
-          <button
-            onClick={onOpenSlides}
-            className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#D4AF37] bg-amber-500/10 hover:bg-[#C59B27] text-[#23153c] hover:text-white font-bold text-xs transition duration-200 shadow-xs"
-            title="إنشاء وتصدير شرائح رسمية إلى Google Slides"
-          >
-            <Presentation className="w-4 h-4 ml-1.5 text-[#C59B27]" />
-            <span>Google Slides</span>
-          </button>
-
-          {/* Voice Live API */}
-          <button
-            onClick={onOpenLiveVoice}
-            className="inline-flex items-center px-3 py-1.5 rounded-lg border border-[#23153c] bg-[#23153c] text-amber-200 hover:bg-[#35215c] font-bold text-xs transition duration-200 shadow-xs"
-            title="محادثة صوتية تفاعلية مع المستشار القانوني الحي (Live API)"
-          >
-            <Mic className="w-4 h-4 ml-1.5 text-amber-400 animate-pulse" />
-            <span>المستشار الصوتي (Live)</span>
-          </button>
-
-          {/* TTS Audio Narration */}
-          <button
-            onClick={onPlayFullTTS}
-            className={`inline-flex items-center px-3 py-1.5 rounded-lg border text-xs font-bold transition duration-200 shadow-xs ${
-              isTTSPlaying
-                ? 'bg-amber-600 text-white border-amber-600'
-                : 'bg-white border-gray-300 text-gray-800 hover:border-[#C59B27] hover:text-[#23153c]'
-            }`}
-            title="استماع صوتي للملخص التنفيذي (Gemini Flash TTS)"
-          >
-            <Volume2 className={`w-4 h-4 ml-1.5 ${isTTSPlaying ? 'animate-bounce' : 'text-amber-600'}`} />
-            <span>{isTTSPlaying ? 'جاري الاستماع...' : 'استماع صوتي'}</span>
-          </button>
-
-          {/* Print */}
-          <button
-            onClick={() => window.print()}
-            className="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 hover:border-[#D4AF37] text-gray-700 hover:text-[#23153c] font-bold text-xs transition duration-200"
-          >
-            <Printer className="w-4 h-4 ml-1.5" />
-            <span>طباعة / PDF</span>
-          </button>
-
-          {/* Copy Link */}
-          <button
-            onClick={handleCopyLink}
-            className="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 hover:border-[#D4AF37] text-gray-700 hover:text-[#23153c] font-medium text-xs transition duration-200"
-          >
-            {copied ? (
-              <>
-                <CheckCircle2 className="w-4 h-4 ml-1.5 text-emerald-600" />
-                <span className="text-emerald-700 font-bold">تم النسخ</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-4 h-4 ml-1.5 text-amber-600" />
-                <span>نسخ</span>
-              </>
-            )}
-          </button>
-
-          {/* Auth Button */}
-          {user ? (
-            <div className="flex items-center space-x-2 space-x-reverse pr-2 border-r border-gray-300">
-              <span className="text-xs font-bold text-[#23153c] max-w-[110px] truncate" title={user.email || ''}>
-                {user.displayName || user.email?.split('@')[0]}
-              </span>
-              <button
-                onClick={onLogout}
-                className="p-1 rounded text-gray-400 hover:text-red-700 transition"
-                title="تسجيل الخروج"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
+            <div className="space-y-1.5">
+              <div className="text-xs font-bold text-[#8A6D2F]">
+                شركة بن كليلة العامري للتجارة والاستثمار ش.م.م · صلالة — ظفار
+              </div>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#23153C] royal-heading leading-tight">
+                إلى الفاضل /{' '}
+                <span className="text-[#8A6D2F] underline decoration-[#DEC98A] underline-offset-8">
+                  خالد المسروري
+                </span>{' '}
+                المحترم — مدير عام مركز حماية المنافسة ومنع الاحتكار
+              </h1>
+              <div className="text-xs sm:text-sm font-semibold text-[#524E48] flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                <UserCheck className="w-4 h-4 text-[#8A6D2F]" />
+                <span>وزارة التجارة والصناعة وترويج الاستثمار — دائرة المنافسة والاحتكار</span>
+              </div>
             </div>
-          ) : (
-            <button
-              onClick={onLogin}
-              className="inline-flex items-center px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition shadow-xs"
-              title="تسجيل الدخول باستخدام Google"
-            >
-              <LogIn className="w-4 h-4 ml-1.5" />
-              <span>دخول Google</span>
-            </button>
-          )}
+          </div>
+
+          {/* Key Fact Summary Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full lg:w-auto shrink-0">
+            <div className="px-4 py-3 rounded-2xl bg-[#FAF9F6] border border-[#DEC98A] flex items-center gap-3">
+              <Clock className="w-5 h-5 text-[#8A6D2F] shrink-0" />
+              <div>
+                <div className="text-[11px] text-[#6B655C] font-medium">إجمالي فترة التعطيل</div>
+                <div className="text-xs sm:text-sm font-bold text-[#23153C]">5 أشهر و18 يوماً</div>
+              </div>
+            </div>
+
+            <div className="px-4 py-3 rounded-2xl bg-[#FAF9F6] border border-[#DEC98A] flex items-center gap-3">
+              <ShieldCheck className="w-5 h-5 text-[#8A6D2F] shrink-0" />
+              <div>
+                <div className="text-[11px] text-[#6B655C] font-medium">المهلة الرسمية والصمت</div>
+                <div className="text-xs sm:text-sm font-bold text-[#23153C]">3 أيام من الصمت الرسمي</div>
+              </div>
+            </div>
+
+            <div className="px-4 py-3 rounded-2xl bg-[#FAF9F6] border border-[#DEC98A] flex items-center gap-3">
+              <Award className="w-5 h-5 text-[#8A6D2F] shrink-0" />
+              <div>
+                <div className="text-[11px] text-[#6B655C] font-medium">الرمز الذي يختصر الملف</div>
+                <div className="text-xs sm:text-sm font-bold text-[#23153C]">صلالة 2026</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Navigation Sub-Header Tabs */}
-      <nav aria-label="أقسام المنصة" className="max-w-7xl mx-auto px-4 sm:px-6 flex overflow-x-auto gap-2 py-2 text-xs font-bold scrollbar-none">
-        {/* TAB 1: 4 Royal Slides */}
-        <button
-          onClick={() => onChangeView('slides_royal')}
-          className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 ${
-            activeView === 'slides_royal'
-              ? 'bg-[#23153c] text-amber-200 border-2 border-[#D4AF37] shadow-xs'
-              : 'text-gray-700 hover:bg-gray-100 hover:text-[#23153c]'
-          }`}
-        >
-          <Presentation className="w-4 h-4 text-amber-400" />
-          <span>العرض التقديمي الملكي (٤ شرائح)</span>
-        </button>
-
-        {/* TAB 2: Duo Audio Simulation */}
-        <button
-          onClick={() => onChangeView('dialogue_sim')}
-          className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 ${
-            activeView === 'dialogue_sim'
-              ? 'bg-[#23153c] text-amber-200 border-2 border-[#D4AF37] shadow-xs'
-              : 'text-gray-700 hover:bg-gray-100 hover:text-[#23153c]'
-          }`}
-        >
-          <MessageSquare className="w-4 h-4 text-[#ECC870]" />
-          <span>المحاكاة الصوتية الحوارية (شخصان)</span>
-        </button>
-
-        {/* TAB 3: Violations & Laws Table */}
-        <button
-          onClick={() => onChangeView('violations_laws')}
-          className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 ${
-            activeView === 'violations_laws'
-              ? 'bg-[#23153c] text-amber-200 border-2 border-[#D4AF37] shadow-xs'
-              : 'text-gray-700 hover:bg-gray-100 hover:text-[#23153c]'
-          }`}
-        >
-          <Gavel className="w-4 h-4 text-[#C59B27]" />
-          <span>جدول التعسف ونصوص القانون العماني</span>
-        </button>
-
-        {/* TAB 4: Studio Direct Upload */}
-        <button
-          onClick={() => onChangeView('studio_upload')}
-          className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 ${
-            activeView === 'studio_upload'
-              ? 'bg-[#23153c] text-amber-200 border-2 border-[#D4AF37] shadow-xs'
-              : 'text-gray-700 hover:bg-gray-100 hover:text-[#23153c]'
-          }`}
-        >
-          <Upload className="w-4 h-4 text-emerald-500" />
-          <span>الرفع المباشر للأدلة من الاستوديو</span>
-        </button>
-
-        {/* TAB 5: Original Master Dossier */}
-        <button
-          onClick={() => onChangeView('dossier')}
-          className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 ${
-            activeView === 'dossier'
-              ? 'bg-[#23153c] text-amber-200 border-2 border-[#D4AF37] shadow-xs'
-              : 'text-gray-700 hover:bg-gray-100 hover:text-[#23153c]'
-          }`}
-        >
-          <Scale className="w-4 h-4" />
-          <span>الملف الرقابي والسيادي (BKA-ANTITRUST)</span>
-        </button>
-
-        {/* TAB 6: Ministry Memo */}
-        <button
-          onClick={() => onChangeView('ministry')}
-          className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 ${
-            activeView === 'ministry'
-              ? 'bg-[#23153c] text-amber-200 border-2 border-[#D4AF37] shadow-xs'
-              : 'text-gray-700 hover:bg-gray-100 hover:text-[#23153c]'
-          }`}
-        >
-          <FileText className="w-4 h-4" />
-          <span>مذكرة ديوان الوزارة (خالد المسروري)</span>
-        </button>
-
-        {/* TAB 7: AI Advisor */}
-        <button
-          onClick={() => onChangeView('ai_advisor')}
-          className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 ${
-            activeView === 'ai_advisor'
-              ? 'bg-[#23153c] text-amber-200 border-2 border-[#D4AF37] shadow-xs'
-              : 'text-gray-700 hover:bg-gray-100 hover:text-[#23153c]'
-          }`}
-        >
-          <Sparkles className="w-4 h-4 text-[#E8C56B]" />
-          <span>المستشار وكاشف المغالطات (Gemini)</span>
-        </button>
-
-        {/* TAB 8: Fleet & Field Gallery */}
-        <button
-          onClick={() => onChangeView('gallery')}
-          className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 ${
-            activeView === 'gallery'
-              ? 'bg-[#23153c] text-amber-200 border-2 border-[#D4AF37] shadow-xs'
-              : 'text-gray-700 hover:bg-gray-100 hover:text-[#23153c]'
-          }`}
-        >
-          <Camera className="w-4 h-4" />
-          <span>معرض الرصد الميداني والأسطول</span>
-        </button>
-      </nav>
     </header>
   );
 };
+
+export default MainHeader;

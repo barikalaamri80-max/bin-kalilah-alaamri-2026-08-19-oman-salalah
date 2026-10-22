@@ -1,160 +1,121 @@
-import React, { useState } from 'react';
-import { Camera, ExternalLink, X, ZoomIn, CheckCircle2, ShieldAlert } from 'lucide-react';
+import React from 'react';
+import { Truck, ShieldCheck, CheckCircle2, FileCheck2, MapPin } from 'lucide-react';
 
-export interface GalleryItem {
+interface FleetEvidenceItem {
   id: string;
-  src: string;
+  refCode: string;
   title: string;
+  date: string;
   location: string;
   description: string;
+  imageUrl: string;
 }
 
-export const FIELD_PHOTOS: GalleryItem[] = [
+const FLEET_GALLERY_ITEMS: FleetEvidenceItem[] = [
   {
-    id: 'photo-1',
-    src: '/assets/aistudio/Videoframe_20260904_003536_com.huawei.himovie.overseas_c92223b8.jpg',
-    title: 'شاحنة أسطول بن كليلة عند بوابة المنفذ الحدودي الإماراتي العماني',
-    location: 'المنفذ الحدودي العماني الإماراتي',
-    description: 'توثيق ميداني لشاحنة بن كليلة الحاملة لأعلاف بركات تحت البوابة الرسمية، وتبرهن على الجاهزية اللوجستية الكاملة للعبور.',
+    id: 'fleet-1',
+    refCode: 'FLEET-PERMIT-243',
+    title: 'انطلاق الشحنة الأولى وعبور منفذ خطم الشكلة خلال 24 ساعة',
+    date: '1 مايو 2026',
+    location: 'منفذ خطم الشكلة الحدودي',
+    description:
+      'توثيق جاهزية الأسطول المعتمد وعبور الشحنة الأولى (500 كيس علف بادي — 25 طن) بموجب البيان الجمركي رقم 20261501028987 في غضون 24 ساعة.',
+    imageUrl: '/assets/aistudio/Videoframe_20260904_003350_com.huawei.himovie.overseas_c9779668.jpg',
   },
   {
-    id: 'photo-2',
-    src: '/assets/aistudio/Videoframe_20260904_003511_com.huawei.himovie.overseas_d7a1ef79.jpg',
-    title: 'وصول الشاحنة إلى مخازن سويحان بدولة الإمارات',
-    location: 'مخازن سويحان — أبوظبي',
-    description: 'الشاحنة المبردة تسير داخل مجمع مخازن سويحان لتفريغ شحنات الأعلاف لتغذية مزارع الدواجن المستهدفة (مزرعة بركة الوقن).',
+    id: 'fleet-2',
+    refCode: 'FLEET-PERMIT-270',
+    title: 'جاهزية الشاحنات المعتمدة لنقل شحنات أعلاف الدواجن (علامة بركات)',
+    date: 'مايو 2026',
+    location: 'مسقط — خط التصدير إلى الإمارات',
+    description:
+      'الالتزام الكامل بجدول التوريد المعتمد (15 رحلة — 7,500 كيس) والسداد النقدي المسبق 100% عبر بنك مسقط.',
+    imageUrl: '/assets/aistudio/Videoframe_20260904_003511_com.huawei.himovie.overseas_d7a1ef79.jpg',
   },
   {
-    id: 'photo-3',
-    src: '/assets/aistudio/Videoframe_20260904_003530_com.huawei.himovie.overseas_060c0f13.jpg',
-    title: 'عمليات الشحن والمناولة بمستودع التخزين رقم (3)',
-    location: 'المستودع الرئيسي رقم 3 — صوامع المطاحن',
-    description: 'توثيق شحن باليتات أكياس أعلاف بركات لاحم، ويظهر تطابق البضاعة المسددة القيمة نقداً 100% بالكامل.',
+    id: 'fleet-3',
+    refCode: 'FLEET-DOC-03',
+    title: 'توثيق شحنات أعلاف الدواجن الوطنية الموجهة للتصدير النظامي',
+    date: 'مايو 2026',
+    location: 'سلطنة عمان — دولة الإمارات العربية المتحدة',
+    description:
+      'توثيق ميداني لعمليات النقل النظامي لأعلاف الدواجن العمانية (Broiler Starter & Finisher) وفق أعلى المعايير اللوجستية.',
+    imageUrl: '/assets/aistudio/Videoframe_20260904_003530_com.huawei.himovie.overseas_060c0f13.jpg',
   },
   {
-    id: 'photo-4',
-    src: '/assets/aistudio/Videoframe_20260904_003537_com.huawei.himovie.overseas_7b184af5.jpg',
-    title: 'المركز اللوجستي الموسع بسويحان (Sweihan Logistics Hub)',
-    location: 'مستودعات سويحان — أبوظبي',
-    description: 'صورة جوية تبرز ضخامة المركز اللوجستي لشركة بن كليلة العامري وأرصفة الشحن المتعددة لاستيعاب 500 طن شهرياً.',
-  },
-  {
-    id: 'photo-5',
-    src: '/assets/aistudio/a112ddaabad04a1cb12dc8a9c87d38b4beaf77eac13c4434a1c8a6f8ec2f3562_473da085.jpg',
-    title: 'شاحنة النقل الدولي بمنفذ الحدود البري (صلالة — الدقم)',
-    location: 'محطة الحدود البرية — سلطنة عُمان',
-    description: 'شاحنة فولفو FH16 التابعة لشركة بن كليلة بانتظار استكمال تسليم ملحقات المبيع الصالحة من المصنع للفسح الدولي.',
-  },
-  {
-    id: 'photo-6',
-    src: '/assets/aistudio/Videoframe_20260904_003350_com.huawei.himovie.overseas_c9779668.jpg',
-    title: 'العمليات اللوجستية المسائية بمركز سويحان',
-    location: 'مركز سويحان اللوجستي — أبوظبي',
-    description: 'تواصل خطوط الإمداد على مدار الساعة لضمان الأمن الغذائي وسرعة تسليم الأعلاف لمزارع الدواجن.',
-  },
-  {
-    id: 'photo-7',
-    src: '/assets/aistudio/Videoframe_20260904_003512_com.huawei.himovie.overseas_da1518eb.jpg',
-    title: 'عبور شاحنة بن كليلة لبوابة المنفذ الحدودي',
-    location: 'بوابة المنفذ الحدودي',
-    description: 'لقطة مقربة للشاحنة تحمل شعارات شركة بن كليلة العامري وعلامة أعلاف بركات بمواصفات تصدير معتمدة.',
-  },
-  {
-    id: 'photo-8',
-    src: '/assets/aistudio/Screenshot_20260903_041907_1697c674.jpg',
-    title: 'الشاحنة على مسار الطريق الدولي مع صور بطاقات الأعلاف',
-    location: 'المنفذ الحدودي البري',
-    description: 'توثيق ميداني لتصاميم أكياس أعلاف بركات (لاحم، إبل، مواشي) المطبوعة على المقطورة والمطابقة للشحنات التعاقدية.',
+    id: 'fleet-4',
+    refCode: 'FLEET-DOC-04',
+    title: 'سجل المتابعة الميدانية والمطابقة المستندية (صلالة 2026)',
+    date: 'مايو – أكتوبر 2026',
+    location: 'صلالة — مسقط — العين',
+    description:
+      'متابعة ميدانية ومستندية مستمرة طوال 5 أشهر و18 يوماً من أجل استكمال المطابقة المستندية النظامية.',
+    imageUrl: '/assets/aistudio/Videoframe_20260904_003537_com.huawei.himovie.overseas_7b184af5.jpg',
   },
 ];
 
 export const FieldEvidenceGallery: React.FC = () => {
-  const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
-
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
-      <div className="flex flex-wrap justify-between items-center gap-4">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-[#D4AF37] text-xs font-bold text-amber-900">
-            <Camera className="w-4 h-4 text-[#C59B27]" />
-            <span>التوثيق البصري الميداني للأسطول والمخازن</span>
+    <div className="space-y-6" dir="rtl">
+      <div className="rounded-3xl p-6 sm:p-8 bg-[#FFFFFF] border-2 border-[#DEC98A] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#FAF9F6] border border-[#DEC98A] text-xs font-bold text-[#8A6D2F]">
+            <Truck className="w-3.5 h-3.5" />
+            معرض الرصد الميداني والأسطول — صلالة 2026
           </div>
-          <h3 className="text-xl sm:text-2xl font-black text-[#23153c]">
-            معرض الرصد الميداني: أسطول شاحنات بن كليلة ومستودعات سويحان
-          </h3>
-          <p className="text-xs sm:text-sm text-gray-600">
-            صور حية لأسطول النقل اللوجستي، بوابات المنافذ الحدودية بين عُمان والإمارات، ومستودعات سويحان بأبوظبي.
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#23153C] royal-heading">
+            توثيق الجاهزية اللوجستية ومسار التصدير المباشر
+          </h2>
+          <p className="text-sm text-[#524E48]">
+            شواهد ميدانية توثق التزام شركة بن كليلة العامري للتجارة والاستثمار بالمسار اللوجستي المباشر والسداد النقدي المسبق 100%.
           </p>
+        </div>
+
+        <div className="px-4 py-3 rounded-2xl bg-[#FAF9F6] border border-[#DEC98A] text-xs font-bold text-[#23153C] flex items-center gap-2 shrink-0">
+          <ShieldCheck className="w-4 h-4 text-[#8A6D2F]" />
+          <span>المطلب الحصري: المطابقة المستندية · صلالة 2026</span>
         </div>
       </div>
 
-      {/* Grid of Photos */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        {FIELD_PHOTOS.map((photo) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {FLEET_GALLERY_ITEMS.map((item) => (
           <div
-            key={photo.id}
-            onClick={() => setSelectedPhoto(photo)}
-            className="group relative bg-white rounded-2xl border-2 border-gray-200 overflow-hidden shadow-sm hover:border-[#D4AF37] hover:shadow-lg transition cursor-pointer flex flex-col justify-between"
+            key={item.id}
+            className="rounded-3xl overflow-hidden bg-[#FFFFFF] border border-[#DEC98A] shadow-2xs flex flex-col justify-between"
           >
-            <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+            <div className="h-56 bg-[#FAF9F6] border-b border-[#EAE4D3] overflow-hidden relative">
               <img
-                src={photo.src}
-                alt={photo.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                src={item.imageUrl}
+                alt={item.title}
+                className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition"></div>
-              <div className="absolute bottom-3 right-3 left-3 text-white">
-                <span className="text-[10px] font-bold text-amber-300 block mb-0.5">
-                  {photo.location}
-                </span>
-                <h4 className="text-xs font-black line-clamp-2 leading-snug">
-                  {photo.title}
-                </h4>
-              </div>
-              <div className="absolute top-2 left-2 p-1.5 rounded-full bg-black/50 text-white opacity-0 group-hover:opacity-100 transition">
-                <ZoomIn className="w-4 h-4" />
-              </div>
+              <span className="absolute top-3 right-3 px-3 py-1 rounded-xl bg-[#23153C]/90 text-[#FFF3C4] border border-[#D4AF37] text-xs font-bold">
+                {item.refCode}
+              </span>
             </div>
-            <div className="p-3 bg-white border-t border-gray-100">
-              <p className="text-[11px] text-gray-600 line-clamp-2 leading-relaxed">
-                {photo.description}
-              </p>
+
+            <div className="p-5 space-y-3">
+              <div className="flex items-center justify-between text-xs font-bold text-[#8A6D2F]">
+                <span>{item.date}</span>
+                <span className="flex items-center gap-1 text-[#524E48]">
+                  <MapPin className="w-3.5 h-3.5 text-[#8A6D2F]" />
+                  {item.location}
+                </span>
+              </div>
+
+              <h3 className="text-base sm:text-lg font-bold text-[#23153C]">{item.title}</h3>
+              <p className="text-xs sm:text-sm text-[#4A453E] leading-relaxed">{item.description}</p>
+
+              <div className="pt-3 border-t border-[#EAE4D3] flex items-center gap-2 text-xs font-bold text-[#8A6D2F]">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>موثق ضمن فهرس القرائن — صلالة 2026</span>
+              </div>
             </div>
           </div>
         ))}
       </div>
-
-      {/* Lightbox Modal */}
-      {selectedPhoto && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="max-w-4xl w-full bg-[#1e1233] rounded-3xl border-2 border-[#D4AF37] overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
-            <div className="p-4 border-b border-white/10 flex justify-between items-center text-white">
-              <div>
-                <span className="text-xs text-amber-300 font-bold block">{selectedPhoto.location}</span>
-                <h3 className="font-black text-sm sm:text-base text-white">{selectedPhoto.title}</h3>
-              </div>
-              <button
-                onClick={() => setSelectedPhoto(null)}
-                className="text-gray-400 hover:text-white p-1 rounded-lg transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="flex-1 bg-black/60 flex items-center justify-center overflow-hidden p-2">
-              <img
-                src={selectedPhoto.src}
-                alt={selectedPhoto.title}
-                className="max-h-[65vh] w-auto max-w-full object-contain rounded-xl"
-              />
-            </div>
-
-            <div className="p-4 bg-[#150a26] text-xs text-gray-300 border-t border-white/10">
-              <p className="leading-relaxed">{selectedPhoto.description}</p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
+
+export default FieldEvidenceGallery;

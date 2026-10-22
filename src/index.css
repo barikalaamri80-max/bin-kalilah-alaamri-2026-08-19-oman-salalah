@@ -4,7 +4,7 @@
   body {
     font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: #FAF9F6;
-    color: #23153c;
+    color: #2C2A28;
     -webkit-font-smoothing: antialiased;
   }
 }
@@ -13,65 +13,66 @@
   font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
 }
 
-/* Gold Metallic Gradients & Borders */
+/* Calm Daytime Royal Light Theme (هادئة ونهارية وتُقرأ بوضوح) */
+.royal-heading {
+  font-family: 'Tajawal', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.glass-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E5DEC9;
+  box-shadow: 0 4px 20px rgba(35, 21, 60, 0.04);
+}
+
+.gold-border-glow {
+  border: 1.5px solid #D5BC7A;
+  box-shadow: 0 6px 24px rgba(184, 134, 11, 0.06);
+}
+
+.gold-gradient-text {
+  color: #8C6512;
+}
+
 .gold-gradient-bg {
-  background: linear-gradient(135deg, #ECC870 0%, #C59B27 50%, #A27B13 100%);
+  background: linear-gradient(135deg, #F6E7B8 0%, #D4AF37 100%);
 }
 
 .gold-frame {
-  border: 1.5px solid #D4AF37;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 1.5px solid #D5BC7A;
+  box-shadow: 0 4px 16px rgba(184, 134, 11, 0.06);
 }
 
-.purple-panel {
-  background: linear-gradient(145deg, #1e1233 0%, #281845 50%, #150a26 100%);
-  border: 1.5px solid rgba(212, 175, 55, 0.6);
+.light-slide-canvas {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAF7F0 100%);
+  border: 2px solid #D5BC7A;
+  box-shadow: 0 10px 30px rgba(35, 21, 60, 0.06);
 }
 
-.text-gold-gradient {
-  background: linear-gradient(180deg, #FFF1C5 0%, #E5BE5E 50%, #B8891D 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.badge-pill-gold {
-  background: linear-gradient(90deg, #A88120 0%, #D4AF37 50%, #A88120 100%);
-}
-
-/* Podium 3D Isometric Base */
-.podium-base {
-  background: linear-gradient(180deg, rgba(212, 175, 55, 0.35) 0%, rgba(35, 21, 60, 0.95) 100%);
-  transform: perspective(600px) rotateX(25deg);
-  box-shadow: 0 25px 40px rgba(0, 0, 0, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.6);
-}
-
-/* Circuit Network Lines */
-.circuit-line {
-  position: absolute;
-  background: linear-gradient(90deg, #D4AF37, #F3D98B, #D4AF37);
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.8);
-  z-index: 1;
+.light-podium-card {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FBF8F1 100%);
+  border: 1.5px solid #D5BC7A;
+  box-shadow: 0 4px 14px rgba(35, 21, 60, 0.04);
 }
 
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
   body {
     background-color: #FFFFFF !important;
-    color: #000000 !important;
-    font-size: 10pt;
+    color: #23153C !important;
+    font-size: 10.5pt;
+    margin: 0;
+    padding: 0;
   }
   .no-print {
     display: none !important;
-  }
-  .print-break {
-    page-break-before: always;
-  }
-  .purple-panel {
-    background: #1e1233 !important;
-    color: #FFFFFF !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  .shadow-purple-card, .shadow-gold-glow {
-    box-shadow: none !important;
   }
 }

@@ -1,62 +1,74 @@
-import React from 'react';
-import { Play, Pause, Square, Volume2, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Volume2, Square, Loader2 } from 'lucide-react';
+import {
+  subscribeToTTS,
+  stopAllAudio,
+  setGlobalPlaybackSpeed,
+  getGlobalPlaybackSpeed,
+} from '../services/ttsService';
 
-interface TTSPlayerBarProps {
-  currentTitle: string;
-  isPlaying: boolean;
-  isLoading: boolean;
-  onTogglePlay: () => void;
-  onStop: () => void;
-}
+export const TTSPlayerBar: React.FC = () => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [activeTitle, setActiveTitle] = useState<string | null>(null);
+  const [speed, setSpeed] = useState<number>(getGlobalPlaybackSpeed());
 
-export const TTSPlayerBar: React.FC<TTSPlayerBarProps> = ({
-  currentTitle,
-  isPlaying,
-  isLoading,
-  onTogglePlay,
-  onStop,
-}) => {
-  if (!currentTitle && !isLoading) return null;
+  useEffect(() => {
+    const unsub = subscribeToTTS((id, loading, title, spd) => {
+      setActiveId(id);
+      setIsLoading(loading);
+      setActiveTitle(title || null);
+      if (spd) setSpeed(spd);
+    });
+    return () => unsub();
+  }, []);
+
+  if (!activeId) return null;
 
   return (
-    <aside aria-label="مشغل الصوت الذكي" className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:max-w-md z-50 bg-[#1e1233]/95 border-2 border-[#D4AF37] rounded-2xl p-3.5 shadow-2xl backdrop-blur-md text-white animate-in slide-in-from-bottom duration-300">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center space-x-3 space-x-reverse min-w-0">
-          <div className="w-9 h-9 rounded-full bg-amber-500/20 border border-[#D4AF37] flex items-center justify-center shrink-0">
-            {isLoading ? (
-              <Loader2 className="w-5 h-5 text-amber-300 animate-spin" />
-            ) : (
-              <Volume2 className="w-5 h-5 text-amber-300 animate-pulse" />
-            )}
+    <div
+      className="fixed bottom-4 left-4 right-4 z-50 max-w-4xl mx-auto rounded-2xl bg-[#23153C] text-[#FFF3C4] border-2 border-[#D4AF37] px-4 py-3 shadow-lg flex flex-wrap items-center justify-between gap-3 no-print"
+      dir="rtl"
+    >
+      <div className="flex items-center gap-3">
+        {isLoading ? (
+          <Loader2 className="w-5 h-5 animate-spin text-[#D4AF37] shrink-0" />
+        ) : (
+          <Volume2 className="w-5 h-5 text-[#D4AF37] animate-pulse shrink-0" />
+        )}
+        <div>
+          <div className="text-[11px] text-[#E6DEC8]">قيد الاستماع الصوتي الآن:</div>
+          <div className="text-xs sm:text-sm font-bold text-[#FFF3C4] line-clamp-1">
+            {activeTitle || 'صوتي الوثيقة — صلالة 2026'}
           </div>
-          <div className="min-w-0">
-            <span className="text-[10px] text-amber-400 font-bold block uppercase tracking-wider">
-              {isLoading ? 'جاري توليد الصوت (Gemini Flash TTS)...' : 'المستشار الصوتي يقرأ الآن:'}
-            </span>
-            <p className="text-xs font-bold truncate text-gray-100">{currentTitle}</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-1.5 shrink-0">
-          {!isLoading && (
-            <button
-              onClick={onTogglePlay}
-              className="p-2 rounded-xl bg-[#C59B27] hover:bg-[#D4AF37] text-[#23153c] font-bold transition shadow-sm"
-              title={isPlaying ? 'إيقاف مؤقت' : 'متابعة التشغيل'}
-            >
-              {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-current" />}
-            </button>
-          )}
-
-          <button
-            onClick={onStop}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition"
-            title="إيقاف نهائي"
-          >
-            <Square className="w-4 h-4" />
-          </button>
         </div>
       </div>
-    </aside>
+
+      <div className="flex items-center gap-2">
+        <div className="flex items-center bg-[#180E2B] border border-[#D4AF37]/40 rounded-xl p-1 gap-1">
+          {[0.9, 1, 1.25].map((spd) => (
+            <button
+              key={spd}
+              onClick={() => setGlobalPlaybackSpeed(spd)}
+              className={`px-2 py-0.5 rounded-lg text-xs font-bold cursor-pointer ${
+                speed === spd ? 'bg-[#D4AF37] text-[#23153C]' : 'text-[#E6DEC8]'
+              }`}
+            >
+              {spd}x
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={() => stopAllAudio()}
+          className="px-3.5 py-1.5 rounded-xl bg-[#D4AF37] text-[#23153C] font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+        >
+          <Square className="w-3.5 h-3.5 fill-current" />
+          <span>إيقاف الصوت</span>
+        </button>
+      </div>
+    </div>
   );
 };
+
+export default TTSPlayerBar;

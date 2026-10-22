@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Lock, ShieldCheck, KeyRound, AlertTriangle, Eye, EyeOff, Building2 } from 'lucide-react';
+import { Lock, ShieldCheck, KeyRound, AlertTriangle, Eye, EyeOff } from 'lucide-react';
+import SovereignEmblem from './SovereignEmblem';
 
 interface SecurityAccessGateProps {
   onUnlock: () => void;
@@ -7,103 +8,70 @@ interface SecurityAccessGateProps {
 
 export const SecurityAccessGate: React.FC<SecurityAccessGateProps> = ({ onUnlock }) => {
   const [passwordInput, setPasswordInput] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setErrorMsg('');
+    setIsSubmitting(true);
 
-    const cleanInput = passwordInput.trim().toUpperCase();
-    if (cleanInput === 'SALALAH2026') {
-      try {
-        sessionStorage.setItem('bka_access_token', 'SALALAH2026_AUTHORIZED');
-        localStorage.setItem('bka_access_token', 'SALALAH2026_AUTHORIZED');
-      } catch (err) {
-        console.warn('Storage unavailable:', err);
-      }
-      setTimeout(() => {
-        setIsSubmitting(false);
+    setTimeout(() => {
+      const normalized = passwordInput.trim().toUpperCase();
+      if (normalized === 'SALALAH2026') {
         onUnlock();
-      }, 250);
-    } else {
-      setTimeout(() => {
+      } else {
+        setErrorMsg('الرقم السري غير صحيح. يُرجى إدخال الرقم السري المعتمد للدخول.');
         setIsSubmitting(false);
-        setErrorMsg('رمز المرور السري غير صحيح. يرجى التحقق وإعادة المحاولة.');
-      }, 350);
-    }
+      }
+    }, 150);
   };
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 relative overflow-hidden bg-[#140b22]"
-      style={{
-        backgroundImage: `radial-gradient(circle at 50% 25%, rgba(197, 155, 39, 0.18) 0%, rgba(20, 11, 34, 0.98) 75%), url('/assets/aistudio/Videoframe_20260904_003537_com.huawei.himovie.overseas_7b184af5.jpg')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
-      }}
+      dir="rtl"
+      className="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 bg-[#FAF9F6] text-[#2C2A28]"
     >
-      {/* Royal Subtle Gold Lighting Accents */}
-      <div className="absolute -top-36 -right-36 w-96 h-96 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute -bottom-36 -left-36 w-96 h-96 bg-[#C59B27]/15 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div className="w-full max-w-lg relative z-10 animate-in fade-in zoom-in-95 duration-500">
-        {/* Outer Prestigious Card */}
-        <div className="bg-[#1c1031]/95 backdrop-blur-2xl border-2 border-[#D4AF37] rounded-3xl p-7 sm:p-10 shadow-[0_25px_70px_-15px_rgba(0,0,0,0.9)] text-center text-white relative overflow-hidden">
-          {/* Top Decorative Gold Crown Ribbon */}
-          <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-[#ECC870] via-[#C59B27] to-[#8C6811]"></div>
+      <div className="w-full max-w-lg">
+        <div className="bg-[#FFFFFF] border border-[#DEC98A] rounded-3xl p-7 sm:p-10 shadow-xs text-center relative overflow-hidden">
+          <div className="h-1.5 w-full bg-gradient-to-l from-[#DEC98A] via-[#F3E9CB] to-[#D4B96A] absolute top-0 inset-x-0" />
 
           {/* Official Company Emblem */}
-          <div className="relative mx-auto w-24 h-24 sm:w-28 sm:h-28 mb-5">
-            <div className="w-full h-full rounded-full border-2 border-[#D4AF37] p-1.5 bg-white shadow-2xl flex items-center justify-center overflow-hidden">
-              <img
-                src="/assets/aistudio/Screenshot_20260813_151701_com_lemon_lvoverseas_EditActivity_116c716b.jpg"
-                alt="شعار شركة بن كليلة العامري للتجارة والاستثمار"
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    '/assets/aistudio/Screenshot_20260903_041907_1697c674.jpg';
-                }}
-              />
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-[#C59B27] border-2 border-white flex items-center justify-center text-[#23153c] shadow-lg">
-              <Lock className="w-4 h-4" />
-            </div>
+          <div className="flex justify-center mb-5 pt-2">
+            <SovereignEmblem size={96} className="ring-2 ring-[#F5EFE0]" />
           </div>
 
           {/* Title & Official Direction Header */}
           <div className="space-y-2 mb-6">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black tracking-wider text-amber-200 bg-[#C59B27]/20 border border-[#D4AF37]/50">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-300" />
-              <span>ملف رقابي سيادي محمي ومشفر</span>
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold text-[#2C2A28] bg-[#FAF9F6] border border-[#DEC98A]">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#8A6D2F]" />
+              <span>وثيقة رسمية مخصصة للجهات المختصة</span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl font-black text-white leading-snug">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#2C2A28] royal-heading leading-snug">
               شركة بن كليلة العامري للتجارة والاستثمار ش.م.م
             </h1>
 
-            <p className="text-xs sm:text-sm text-amber-300 font-bold">
-              سلطنة عُمان — ديوان عام الوزارة | مركز حماية المنافسة ومنع الاحتكار
-            </p>
-
-            <div className="pt-2 border-t border-white/10 mt-3">
-              <p className="text-xs sm:text-sm text-gray-200">
-                إلى الفاضل / <span className="text-amber-300 font-black text-sm sm:text-base">خالد المسروري</span> المحترم
+            <div className="pt-3 border-t border-[#EAE4D3] mt-3">
+              <p className="text-xs sm:text-sm text-[#524E48] font-medium">
+                إلى الفاضل /{' '}
+                <span className="text-[#2C2A28] font-bold text-sm sm:text-base">
+                  خالد المسروري
+                </span>{' '}
+                المحترم
               </p>
-              <p className="text-[11px] text-amber-200/80 mt-0.5">
-                مدير عام مركز حماية المنافسة ومنع الاحتكار
+              <p className="text-xs text-[#6B655C] mt-0.5">
+                مدير عام دائرة المنافسة والاحتكار — وزارة التجارة والصناعة وترويج الاستثمار
               </p>
             </div>
           </div>
 
           {/* Security Notice Note */}
-          <div className="bg-[#261642]/80 border border-[#D4AF37]/35 rounded-2xl p-4 mb-6 text-xs text-gray-200 leading-relaxed text-right flex items-start gap-3">
-            <Lock className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="bg-[#FAF9F6] border border-[#E6DEC8] rounded-2xl p-4 mb-6 text-xs text-[#33302C] leading-relaxed text-right flex items-start gap-3">
+            <Lock className="w-4 h-4 text-[#8A6D2F] shrink-0 mt-0.5" />
             <span>
-              هذا الملف مخصص للجهات الرقابية والمصرح لهم رسمياً. يُرجى إدخال رمز المرور السري المعتمد لفتح العرض التقديمي والمستندات الرقابية.
+              يُرجى إدخال الرقم السري المعتمد للدخول إلى الوثيقة واستعراض الوقائع الموثقة.
             </span>
           </div>
 
@@ -112,9 +80,9 @@ export const SecurityAccessGate: React.FC<SecurityAccessGateProps> = ({ onUnlock
             <div className="relative text-right">
               <label
                 htmlFor="gate-pass-input"
-                className="block text-xs sm:text-sm font-bold text-amber-200 mb-2 mr-1"
+                className="block text-xs sm:text-sm font-semibold text-[#2C2A28] mb-2 mr-1"
               >
-                رمز المرور السري:
+                الرقم السري للدخول:
               </label>
 
               <div className="relative flex items-center">
@@ -123,8 +91,9 @@ export const SecurityAccessGate: React.FC<SecurityAccessGateProps> = ({ onUnlock
                   type={showPassword ? 'text' : 'password'}
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
-                  placeholder=""
-                  className="w-full bg-[#100720] border-2 border-[#D4AF37]/60 focus:border-[#D4AF37] focus:ring-2 focus:ring-[#C59B27]/50 text-white rounded-xl px-4 py-3.5 text-center text-base sm:text-lg font-bold tracking-widest transition outline-none"
+                  placeholder="أدخل الرقم السري"
+                  dir="ltr"
+                  className="w-full bg-[#FAF9F6] border border-[#DEC98A] focus:border-[#8A6D2F] text-[#2C2A28] rounded-xl px-4 py-3.5 text-center text-base sm:text-lg font-bold tracking-widest transition outline-none"
                   autoFocus
                   autoComplete="off"
                   spellCheck="false"
@@ -132,7 +101,7 @@ export const SecurityAccessGate: React.FC<SecurityAccessGateProps> = ({ onUnlock
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute left-3 p-1 text-gray-400 hover:text-amber-300 transition cursor-pointer"
+                  className="absolute left-3 p-1 text-[#6B655C] hover:text-[#2C2A28] transition cursor-pointer"
                   title={showPassword ? 'إخفاء' : 'إظهار'}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -141,8 +110,8 @@ export const SecurityAccessGate: React.FC<SecurityAccessGateProps> = ({ onUnlock
             </div>
 
             {errorMsg && (
-              <div className="p-3 bg-red-950/80 border border-red-500 text-red-200 rounded-xl text-xs font-bold flex items-center gap-2.5 text-right animate-in fade-in duration-200">
-                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+              <div className="p-3 bg-[#FDF6F6] border border-[#E6B8B8] text-[#7A2E2E] rounded-xl text-xs font-semibold flex items-center gap-2.5 text-right">
+                <AlertTriangle className="w-4 h-4 text-[#9E3B3B] shrink-0" />
                 <span>{errorMsg}</span>
               </div>
             )}
@@ -150,26 +119,22 @@ export const SecurityAccessGate: React.FC<SecurityAccessGateProps> = ({ onUnlock
             <button
               type="submit"
               disabled={isSubmitting || !passwordInput.trim()}
-              className="w-full py-3.5 px-6 rounded-xl gold-gradient-bg text-[#23153c] font-black text-sm sm:text-base tracking-wide hover:brightness-110 active:scale-[0.99] transition shadow-[0_6px_25px_rgba(212,175,55,0.45)] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full py-3.5 px-6 rounded-xl bg-[#F5EFE0] hover:bg-[#EDE2C8] text-[#2C2A28] border border-[#C5A858] font-bold text-sm sm:text-base transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              <KeyRound className="w-4 h-4 text-[#23153c]" />
-              <span>{isSubmitting ? 'جاري التحقق وفك التشفير...' : 'دخول وفك تشفير الملف الرقابي'}</span>
+              <KeyRound className="w-4 h-4 text-[#8A6D2F]" />
+              <span>{isSubmitting ? 'جاري التحقق...' : 'دخول إلى الوثيقة'}</span>
             </button>
           </form>
 
-          {/* Confidentiality Notice */}
-          <div className="mt-6 pt-4 border-t border-white/10 text-center">
-            <span className="text-[11px] sm:text-xs text-gray-400 leading-normal block">
-              يتم تزويد رمز المرور السري مباشرة من إدارة الشركة للمصرح لهم بالاطلاع
-            </span>
+          {/* Footer */}
+          <div className="mt-6 pt-4 border-t border-[#EAE4D3] text-[11px] text-[#6B655C] flex flex-wrap justify-between items-center gap-2">
+            <span>شركة بن كليلة العامري للتجارة والاستثمار ش.م.م</span>
+            <span className="font-semibold text-[#8A6D2F]">صلالة، سلطنة عمان</span>
           </div>
         </div>
-
-        {/* Footer Authority */}
-        <p className="text-center text-gray-400 text-xs mt-4">
-          نظام التوثيق والمطابقة الرقابية © 2026 — شركة بن كليلة العامري للتجارة والاستثمار ش.م.م
-        </p>
       </div>
     </div>
   );
 };
+
+export default SecurityAccessGate;

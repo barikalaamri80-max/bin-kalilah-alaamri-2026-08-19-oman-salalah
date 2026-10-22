@@ -37,7 +37,6 @@ export class LiveVoiceClient {
     this.ws = new WebSocket(wsUrl);
 
     this.ws.onopen = async () => {
-      console.log('Live Voice WebSocket connected');
       this.updateStatus('connected');
       await this.startMicrophoneCapture();
     };
@@ -61,21 +60,18 @@ export class LiveVoiceClient {
           this.stopAudioPlayback();
           this.updateStatus('connected');
         } else if (data.type === 'error') {
-          console.error('Server error in live session:', data.error);
           this.updateStatus('error');
         }
-      } catch (e) {
-        console.error('Error parsing live WS message:', e);
+      } catch {
+        // ignore malformed message
       }
     };
 
-    this.ws.onerror = (err) => {
-      console.error('Live Voice WS error:', err);
+    this.ws.onerror = () => {
       this.updateStatus('error');
     };
 
     this.ws.onclose = () => {
-      console.log('Live Voice WS closed');
       this.disconnect();
     };
   }
@@ -88,7 +84,7 @@ export class LiveVoiceClient {
 
   private async startMicrophoneCapture(): Promise<void> {
     try {
-      this.inputAudioCtx = new (window.AudioContext || (window as any).webkitAudioContext)({
+      this.inputAudioCtx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)({
         sampleRate: 16000,
       });
 
@@ -102,7 +98,6 @@ export class LiveVoiceClient {
       });
 
       const source = this.inputAudioCtx.createMediaStreamSource(this.mediaStream);
-      // ScriptProcessor with 4096 buffer size
       this.processor = this.inputAudioCtx.createScriptProcessor(4096, 1, 1);
 
       this.processor.onaudioprocess = (e) => {
@@ -122,8 +117,7 @@ export class LiveVoiceClient {
 
       source.connect(this.processor);
       this.processor.connect(this.inputAudioCtx.destination);
-    } catch (err) {
-      console.error('Microphone access failed:', err);
+    } catch {
       this.updateStatus('error');
     }
   }
@@ -150,7 +144,7 @@ export class LiveVoiceClient {
   private async playAudioChunk(base64Audio: string): Promise<void> {
     try {
       if (!this.outputAudioCtx) {
-        this.outputAudioCtx = new (window.AudioContext || (window as any).webkitAudioContext)({
+        this.outputAudioCtx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)({
           sampleRate: 24000,
         });
       }
@@ -166,7 +160,6 @@ export class LiveVoiceClient {
         bytes[i] = binary.charCodeAt(i);
       }
 
-      // 16-bit PCM (little endian) to Float32
       const numSamples = Math.floor(len / 2);
       const float32Data = new Float32Array(numSamples);
       const dataView = new DataView(bytes.buffer);
@@ -193,8 +186,8 @@ export class LiveVoiceClient {
           this.updateStatus('connected');
         }
       };
-    } catch (e) {
-      console.error('Audio playback error:', e);
+    } catch {
+      // ignore audio chunk error
     }
   }
 
