@@ -111,8 +111,8 @@ export function App() {
       stopAllAudio();
       return;
     }
-    speakArabicText(WELCOME_BRIEF_AUDIO_SCRIPT, key, 'khalid');
-  };
+    new Audio("https://github.com/barikaalaamri80-max/bin-kalilah-alaamri-2026-08-19-oman-salalah/raw/main/ElevenLabs_2026-10-24T23_06_20_Barik_Alaamri_eleven_v4_exp.mp3").play();
+
 
   const handlePlayAudioBlock = (text: string, key: string) => {
     if (activeAudioId === key) {
